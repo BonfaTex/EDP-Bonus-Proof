@@ -1,0 +1,226 @@
+%!TEX root = ../main.tex
+
+\chapter{Preparazione orale EDP Numerica}
+\thispagestyle{empty}
+
+\section{Contesto}
+
+\begin{enumerate}
+    \item Consideriamo la formulazione debole di un generico problema ellittico posto su un dominio $\Omega\subseteq\RR^n$, che si può esprimere tramite il PVA
+    \begin{equation*}
+    \text{trovare }u\in V\ :\qquad a(u,v)=F(v)\qquad \forall v \in V
+    \end{equation*}
+    essendo $V$ un opportuno spazio di Hilbert, sottospazio di $H^1(\Omega)$, $a(\cdot,\cdot):V\times V\to\RR$ una forma bilineare continua e coerciva, $F(\cdot):V\to\RR$ un funzionale lineare e limitato. Sotto tali ipotesi il \emph{Lemma di Lax-Milgram} assicura esistenza e unicità della soluzione $u$.
+
+    \item Sia $V_h$ una famiglia di spazi dipendenti da un parametro positivo $h$, tali che
+    \begin{equation*}
+    V_h\subset V,\qquad \dim V_h=N_h<\infty\qquad \forall h>0
+    \end{equation*}
+
+    Il problema approssimato assume la forma
+    \begin{equation*}
+    \text{trovare }u_h\in V_h\ :\qquad a(u_h,v_h)=F(v_h)\qquad \forall v_h \in V_h
+    \end{equation*}
+    e viene detto \emph{problema di Galerkin}.
+
+    \item Dato che 
+    \begin{itemize}
+        \item lo spazio $V_h$ è sottospazio chiuso di $V$ spazio di Hilbert, quindi è anch'esso di Hilbert
+        \item la forma bilineare $a(\cdot,\cdot)$ e il funzionale $F(\cdot)$ sono i medesimi del PVA    
+    \end{itemize}
+    allora sono soddisfatte le ipotesi richieste dal \emph{Lemma di Lax-Milgram}, e possiamo dunque dire che anche la soluzione $u_h$ esiste unica.
+
+    \item Il \emph{metodo agli elementi finiti} è un caso particolare di \emph{metodo di Galerkin} in cui il sottospazio $V_h$ è definito come uno spazio di funzioni continue su $\Omega$, polinomiali a tratti su una partizione di $\Omega$ e di grado $r=1,2,3,4$ (per $r$ maggiori si usano i \emph{metodi spettrali}). 
+
+    \item Abbiamo tutti gli ingredienti per enunciare il seguente
+    \begin{thm}
+    Siano $u\in V$ la soluzione esatta del PVA e $u_h\in V_h$ la sua soluzione approssimata tramite il \emph{metodo FEM-Galerkin} $\PP^r$. 
+
+    \begin{enumerate}
+        \item Se $u\in H^{r+1}(\Omega)$ allora vale la seguente stima \emph{in norma dell'energia} dell'errore:
+        \begin{equation}\label{stima1}
+        \norm{u-u_h}_{H^1}\leq \frac{M}{\alpha} Ch^r\abs{u}_{H^{r+1}}
+        \end{equation}
+        essendo $C$ una costante indipendente da $h$ e da $u$.
+
+        \item In generale, se $u\in\Cc^0(\Omegaa)\cap H^{p+1}(\Omega)$ per qualche $p>0$, allora vale la stima a priori:
+        \begin{equation}\label{stima2}
+        \norm{u-u_h}_{H^1}\leq Ch^s\abs{u}_{H^{s+1}}\qquad \text{con } s=\min\{r,p\}
+        \end{equation}
+    \end{enumerate}
+    \end{thm}
+\end{enumerate}
+
+\section{Stima dell'errore in \texorpdfstring{$L^2$}{C}}
+
+Si può decidere di studiare l'errore solamente nella norma $H^0$ cioè $L^2$. Supponiamo $u\in H^{r+1}(\Omega)$, possiamo subito dire che in norma $L^2$ vale la seguente stima:
+\begin{equation*}
+\norm{u-u_h}_{L^2}\leq \norm{u-u_h}_{H^1}\overset{\eqref{stima1}}{\leq} \frac{M}{\alpha} Ch^r\abs{u}_{H^{r+1}}
+\end{equation*}
+
+ma questa è una stima non ottimale. Infatti, essendo la norma $L^2$ meno stringente della precedente, ci si deve aspettare una più elevata velocità di convergenza rispetto ad $h$.
+
+Con la norma $L^2$ si guadagna un ordine di convergenza:
+\begin{thm}
+Siano $u\in V$ la soluzione esatta del PVA e $u_h\in V_h$ la sua soluzione approssimata tramite il \emph{metodo FEM-Galerkin} $\PP^r$. Se $u\in\Cc^0(\Omegaa)\cap H^{p+1}(\Omega)$ per qualche $p>0$, allora vale la stima a priori:
+\begin{equation}\label{stima3}
+\norm{u-u_h}_{L^2}\leq Ch^{s+\color{red}{1}}\abs{u}_{H^{s+1}}\qquad \text{con } s=\min\{r,p\}
+\end{equation}
+essendo $C$ una costante indipendente da $h$ e da $u$.
+\end{thm}
+
+Dimostriamo il teorema per l'equazione $-\Lap u=f$, ma si può estendere ad operatori ellitici più generali.
+
+\section{Dimostrazione}
+
+Vogliamo trovare una maggiorazione di $\norm{u-u_h}_{L^2}=\norm{e_h}_{L^2}$ rispetto $h$.
+
+\subsection*{Prerequisito}
+
+Iniziamo menzionando il
+\begin{lemma}[Regolarità ellittica]
+Si consideri il problema di Dirichlet omogeneo per l'equazione di Poisson:
+\begin{equation*}
+\begin{cases}
+-\Lap w=g &\text{ in }\Omega \\
+w=0 &\text{ su }\partial\Omega
+\end{cases}
+\end{equation*}
+con $g\in L^2(\Omega)$. Se $\partial\Omega$ è sufficientemente regolare (e.g., $\partial\Omega$ è una curva di classe $\Cc^2$ oppure $\Omega$ è un poligono convesso), allora $w\in H^2(\Omega)$ e inoltre $\exists C>0$ tale che
+\begin{equation}\label{dim1}
+\norm{w}_{H^2}\leq C\norm{g}_{L^2}
+\end{equation}
+\end{lemma}
+
+\textbf{NB:} la \eqref{dim1} definisce la stabilità del problema $-\Lap u=f$ in $H^2$.
+
+\subsection*{Passo I: formula di rappresentazione dell'errore}
+
+Applichiamo il \emph{trucco di Aubin-Nitsche}, ovvero consideriamo il seguente problema di Poisson ausiliario detto \emph{problema aggiunto}:
+\begin{equation*}
+\begin{cases}
+-\Lap \phi=e_h &\text{ in }\Omega \\
+\phi=0 &\text{ su }\partial\Omega
+\end{cases}
+\end{equation*}
+
+La sua formulazione debole è
+\begin{equation*}
+\text{trovare }\phi\in H^1_0(\Omega)\ :\qquad a(\phi,v)=\int_\Omega e_h v \domega \qquad \forall v\in H^1_0(\Omega)
+\end{equation*}
+
+Con la scelta particolare della funzione test $v\equiv e_h$ si ottiene
+\begin{equation*}
+\norm{e_h}^2_{L^2}=a(\phi,e_h)
+\end{equation*}
+
+che è una forma alternativa di rappresentazione dell'errore di approssimazione.
+
+\subsection*{Passo II: fb simmetrica e ortogonalità di Galerkin}
+
+Sotto l'ipotesi che $a(\cdot,\cdot)$ sia simmetrica abbiamo
+\begin{equation*}
+\norm{e_h}^2_{L^2}=a(\phi,e_h)\overset{\text{sym}}{=}a(e_h,\phi)=\underbracket[0.2pt]{a(u-u_h,\phi)}_{\perp \text{??}}
+\end{equation*}
+
+Ricordando la
+\begin{propriet}
+Il metodo di Galerkin è fortemente consistente, ovvero
+\begin{equation*}
+a(u-u_h,v_h)=0\qquad\forall v_h\in V_h
+\end{equation*}
+\end{propriet}
+
+possiamo dire che per una certa funzione $\phi_h\in V_h$ da determinare vale
+\begin{equation*}
+a(u-u_h,\phi_h)=0
+\end{equation*}
+
+Ma allora
+\begin{equation*}
+\norm{e_h}^2_{L^2}=a(\phi,e_h)=a(\phi-\phi_h,e_h)
+\end{equation*}
+
+\subsection*{Passo III: Cauchy-Schwarz e interpolazione}
+
+Applichiamo la disuguaglianza di Cauchy-Schwarz:
+\begin{align*}
+\norm{e_h}^2_{L^2}=a(\phi-\phi_h,e_h)&=\left(\Grad(\phi-\phi_h),\Grad e_h\right)_{L^2} \\
+&\leq \norm{\Grad(\phi-\phi_h)}_{L^2}\norm{\Grad e_h}_{L^2}=\abs{e_h}_{H^1}\abs{\phi-\phi_h}_{H^1}
+\end{align*}
+
+Ora consideriamo come $\phi_h=\Pi_h^1\phi$ cioè l'interpolante FEM $\PP^1$ di $\phi$. 
+
+\textbf{NB:} è possibile applicare l'operatore di interpolazione $\Pi_h^1$ a $\phi$ perché per il \emph{lemma di regolarità ellittica} $\phi\in H^2(\Omega)$ e quindi in particolare $\phi\in\Cc^0(\Omegaa)$ per via del fatto che $H^k(\Omega)$ è contenuto in $\Cc^m(\Omegaa)$ se $k>m+n/2$ ($n$ dimensione di $\Omega$). 
+
+Sappiamo che vale il
+
+\begin{thm}[Errore d'interpolazione]
+Sia $u\in H^{r+1}(\Omega)$ e sia $\Pi_h^r u$ la sua interpolante FEM $\PP^r$. Allora:
+\begin{equation*}
+\abs{u-\Pi_h^r u}_{H^k}\leq C_{k,r} h^{r+1-k}\abs{u}_{H^{r+1}}\qquad \text{per }k=0,1
+\end{equation*}
+\end{thm}
+
+Nel nostro caso $u=\phi$, $r=1$, $k=1$, quindi la stima è
+\begin{equation*}
+\abs{\phi-\Pi_h^1 \phi}_{H^1}\leq C h^{1}\abs{\phi}_{H^2}
+\end{equation*}
+
+da cui
+\begin{equation*}
+\norm{e_h}^2_{L^2}\leq \abs{e_h}_{H^1}\abs{\phi-\Pi_h^1\phi}_{H^1}\leq \abs{e_h}_{H^1} C h\underbracket[0.2pt]{\abs{\phi}_{H^2}}_{\text{??}}
+\end{equation*}
+
+\subsection*{Passo IV: regolarità ellittica}
+
+Sempre per il \emph{lemma di regolarità ellittica}, la quantità $\abs{\phi}_{H^2}$ può essere ancora maggiorata:
+\begin{equation*}
+\abs{\phi}_{H^2}\leq C \norm{e_h}_{L^2}
+\end{equation*}
+
+Perciò deduciamo che 
+\begin{equation*}
+\norm{e_h}^{\cancel{2}}_{L^2}\leq \abs{e_h}_{H^1} C h \cancel{\norm{e_h}_{L^2}} \qquad \Longrightarrow \qquad \norm{e_h}_{L^2}\leq C h \abs{e_h}_{H^1}
+\end{equation*}
+
+dove $C$ ingloba tutte le costanti apparse nei conti.
+
+A questo punto è sufficiente applicare la \eqref{stima2} per ottenere la tesi.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
